@@ -5,25 +5,34 @@ on:
     branches:
       - main
 
+
 jobs:
-  apple-build:
-    runs-on: macos-latest
+  build-test:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-    - name: Setup Rust Toolchain
+    - name: Setup MacOS Rust Toolchain
+      if: runner.os == 'macOS'
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         toolchain: "1.90"
         target: aarch64-apple-darwin
-
-  windows-build:
-    runs-on: windows-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-    - name: Setup Rust Toolchain
+    - name: Setup Windows Rust Toolchain
+      if: runner.os == 'Windows'
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         toolchain: "1.90"
         target: x86_64-pc-windows-msvc
+    - name: Run tests
+      if: startsWith(github.ref, 'refs/heads/')
+      run: cargo test --workspace -- --show-output 2>&1 | tee test.log
+    - name: Upload test artifacts
+      if: startsWith(github.ref, 'refs/heads/')
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: test.log
