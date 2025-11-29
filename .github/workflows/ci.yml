@@ -12,6 +12,8 @@ jobs:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
       - name: Setup Environment
         uses: ./.github/workflows/actions/setup-environment
       - name: Test Application
