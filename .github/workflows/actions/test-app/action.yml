@@ -11,4 +11,5 @@ runs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
+        name: test-artifacts-${{ runner.os }}
         path: artifacts/tests/*
