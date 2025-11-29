@@ -1,0 +1,11 @@
+name: "Setup Environment"
+description: "Sets up the Rust environment for building the application."
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+    - name: Install rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        target: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin' || runner.os == 'windows' && 'x86_64-pc-windows-msvc' || 'x86_64-unknown-linux-gnu' }}

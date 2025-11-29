@@ -1,0 +1,14 @@
+name: "Test Application"
+description: "Runs tests for the Rust application."
+runs:
+  using: "composite"
+  steps:
+    - name: Run cargo tests
+      shell: bash
+      run: |
+        mkdir -p artifacts/tests
+        cargo test --workspace -- --show-output 2>&1 | tee artifacts/tests/cargo-${{ runner.os }}.log
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        path: artifacts/tests/*
