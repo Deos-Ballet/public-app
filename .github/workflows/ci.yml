@@ -27,11 +27,18 @@ jobs:
         toolchain: "1.90"
         target: x86_64-pc-windows-msvc
     - name: Run tests
-      if: startsWith(github.ref, 'refs/heads/')
-      run: cargo test --workspace -- --show-output 2>&1 | tee "test-${{ matrix.os }}.log"
-    - name: Upload test artifacts
-      if: startsWith(github.ref, 'refs/heads/')
+      if: github.ref_type != 'tag'
+      run: cargo test --workspace -- --show-output 2>&1 | tee "artifacts/test-${{ matrix.os }}.log"
+    - name: Build release
+      if: github.ref_type == 'tag'
+      run: cargo build --release
+    - name: Release
+      if: github.ref_type == 'tag'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: target/release/public-app(\.exe)?
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: test-results-${{ matrix.os }}
-        path: test-*.log
+        name: artifacts-${{ matrix.os }}
+        path: artifacts/*
