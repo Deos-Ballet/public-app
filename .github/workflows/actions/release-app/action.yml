@@ -8,7 +8,7 @@ runs:
       run: |
         cargo build --release
         mkdir -p artifacts/builds
-        cp target/release/public-app.{,exe} artifacts/builds/
+        find . -maxdepth 1 -type f \( -name "public-app" -o -name "public-app.exe" \) -exec cp {} artifacts/builds/ \;
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
