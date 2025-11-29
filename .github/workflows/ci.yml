@@ -33,7 +33,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts/builds
+      - name: Extract binaries
+        run: |
+          find artifacts/builds -type f -
       - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/builds/*
+          files: artifacts/builds/**/*
